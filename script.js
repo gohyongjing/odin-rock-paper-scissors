@@ -35,37 +35,49 @@ function getWinner(playerChoice, computerChoice) {
     return 'None';
 }
 
-function getGameResult(playerChoice, computerChoice) {
-    if (playerChoice == null || playerChoice.length == 0) {
-        return 'Uh-oh! Round skipped!'
-    }
-    playerChoice = playerChoice[0].toUpperCase() + playerChoice.substring(1).toLowerCase();
-    if (playerChoice !== 'Rock' && playerChoice !== 'Paper' && playerChoice !== 'Scissors') {
-        return 'Uh-oh! You can only pick rock or paper or scissors!';
-    }
-    
-    let winner = getWinner(playerChoice, computerChoice);
+function displayResult(playerChoice, computerChoice, winner) {
+    const infoDiv = document.querySelector('#info');
     if (winner === 'Player') {
-        return `You win! ${playerChoice} beats ${computerChoice}`;
+        infoDiv.innerText = `You win! ${playerChoice} beats ${computerChoice}`;
     } else if (winner === 'Computer') {
-        return `You lose! ${computerChoice} beats ${playerChoice}`;
+        infoDiv.innerText = `You lose! ${computerChoice} beats ${playerChoice}`;
     } else if (winner === 'None') {
-        return `It's a draw! We both picked ${computerChoice}`;
+        infoDiv.innerText = `It's a draw! We both picked ${computerChoice}`;
     }
 }
 
-function playRound() {
-    let playerChoice = prompt('Pick your choice! (rock / paper / scissors)');
-    let result = getGameResult(playerChoice, computerPlay());
-    alert(result);
-}
-
-function game() {
-    alert("Hello! Welcome to rock-paper-scissors! Let's play 5 rounds!");
-    for (let i = 0; i < 5; i++) {
-        playRound();
+function updateScore(scores, winner) {
+    if (winner === 'Player') {
+        scores[0] += 1;
+    } else if (winner === 'Computer') {
+        scores[1] += 1;
     }
-    alert('Hope you had fun!')
+    const scoreDiv = document.querySelector('#score');
+    scoreDiv.innerText = `Player: ${scores[0]} | Computer: ${scores[1]}`;
 }
 
-game();
+function displayResult(playerChoice, computerChoice, winner) {
+    const infoDiv = document.querySelector('#info');
+    if (winner === 'Player') {
+        infoDiv.innerText = `You win! ${playerChoice} beats ${computerChoice}`;
+    } else if (winner === 'Computer') {
+        infoDiv.innerText = `You lose! ${computerChoice} beats ${playerChoice}`;
+    } else if (winner === 'None') {
+        infoDiv.innerText = `It's a draw! We both picked ${computerChoice}`;
+    }
+}
+
+function playRound(playerChoice, scores) {
+    const computerChoice = computerPlay();
+    let winner = getWinner(playerChoice, computerChoice);
+    updateScore(scores, winner)
+    displayResult(playerChoice, computerChoice, winner);
+
+}
+
+let scores = [0, 0];
+
+const buttons = document.querySelectorAll('button');
+buttons.forEach((button) => {
+    button.addEventListener('click', () => playRound(button.id, scores))
+});
